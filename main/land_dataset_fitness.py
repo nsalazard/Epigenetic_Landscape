@@ -1,6 +1,6 @@
 import numpy as np
 
-from helper_functions import kl_distance, d1_distance
+from helper_func import kl_distance, d1_distance
 from class_landscape import Landscape
 
 result_distance = kl_distance
