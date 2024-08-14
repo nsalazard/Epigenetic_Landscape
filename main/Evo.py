@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from datetime import datetime
+from IPython.display import HTML
 import numpy as np
 import random
 import os
@@ -9,12 +10,17 @@ from class_population import Population
 from land_dataset_fitness import CellDiff_Dataset_Landscape
 from morphogen_regimes import *
 from landscape_visuals import *
-from helper_func import plot_cell_proportions, get_cell_data
+from helper_func import plot_cell_concentration, get_cell_data, delete_all_images, create_directory_if_not_exists
 from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
-save_dir = 'saved_files/'
-dir_img = 'images/1/'
+seed= 17
+save_dir = f'saved_files_{seed}/'
+
+np.random.seed(seed)
+from decimal import Decimal, getcontext, ROUND_HALF_UP
+getcontext().prec = 6
+getcontext().rounding = ROUND_HALF_UP
 
 
 if __name__ == '__main__':
