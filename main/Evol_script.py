@@ -15,6 +15,7 @@ from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 22
+NUM_EVO = 10
 save_dir = f'saved_files_{seed}/'
 
 np.random.seed(seed)
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     tf = 80.
     tc = 60.
     div = 40 #40 cells
-    repl = 20 #20 replicates
+    repl = 10 #20 replicates
     #Total num cell = 40*20 = 800
     nt = int(tf*3)
     noise_init = 0.5
@@ -109,7 +110,7 @@ if __name__ == '__main__':
 
     #EVOLUTION
 
-    fitness_traj = P.evolve_parallel(200, fitness_pars, save_dir, save_each=5, output_dir = f'images/{seed}/evo/')
+    fitness_traj = P.evolve_parallel(NUM_EVO, fitness_pars, save_dir, save_each=5, output_dir = f'images/{seed}/evo/')
     print('Done')
 
     output_dir = f"images/{seed}/"
