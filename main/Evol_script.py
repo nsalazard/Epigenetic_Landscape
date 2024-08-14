@@ -15,7 +15,8 @@ from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 22
-NUM_EVO = 10
+NUM_EVO = 200
+NUM_LAND = 200
 save_dir = f'saved_files_{seed}/'
 
 np.random.seed(seed)
@@ -99,8 +100,7 @@ if __name__ == '__main__':
     start_module_list = [Node.generate(par_limits, par_choice_values, n_regimes=2) for i in range(3)]
 
     # Population size should be even, adjust N to your computing capacity
-    N = 16
-    P = Population(cell = cell,N = N, problem_type = Somitogenesis_Landscape, landscape_pars = landscape_pars, prob_pars = prob_pars, fitness_pars = fitness_pars, par_limits = par_limits, par_choice_values = par_choice_values, start_module_list = start_module_list)
+    P = Population(cell = cell,N = NUM_LAND, problem_type = Somitogenesis_Landscape, landscape_pars = landscape_pars, prob_pars = prob_pars, fitness_pars = fitness_pars, par_limits = par_limits, par_choice_values = par_choice_values, start_module_list = start_module_list)
 
     #Creation of directories
     create_directory_if_not_exists(f"images/{seed}/")
@@ -169,6 +169,7 @@ if __name__ == '__main__':
                                 elev=20, azim=-90, output_gif = output_gif, igen =150, fit = P.landscape_list[0].fitness)
 
     create_gif_from_images(output_gif, f'images/{seed}/potential_time.gif', duration=1000)
+    delete_all_images(f'images/{seed}/GIF/', '*.png')
 
     #Create a video of the cell dynamics
 

@@ -7,6 +7,7 @@ import subprocess
 import shutil
 import re
 import os
+from helper_func import delete_all_images
 
 from cmcrameri import cm as scm
 from matplotlib.colors import ListedColormap, BoundaryNorm, CenteredNorm
@@ -523,5 +524,4 @@ def video_landscape(landscape, xx, yy, traj_times=(0,0,0), color_scheme='fp_type
         plt.close(fig)
     video_path = f'{output_dir}{video_name}.mp4'
     create_video_from_images(temp_dir, video_path)
-
-    shutil.rmtree(temp_dir)
+    delete_all_images(temp_dir, '*.png')
