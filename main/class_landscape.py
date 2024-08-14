@@ -32,7 +32,7 @@ class Landscape:
         self.morphogen_times = morphogen_times
         self.used_fp_types = used_fp_types
         self.init_cond = init_cond
-        self.max_n_modules = 15  #MAX
+        self.max_n_modules = 7  #MAX
         self.tilt = tilt
         self.tilt_var = tilt
         self.tilt_par = tilt_par
@@ -165,7 +165,7 @@ class Landscape:
         if r < prob_pars['prob_tilt']:
             self.tilt = np.random.uniform(*self.par_choice_values['tilt_lmt'])
 
-        if (prob_pars['prob_tilt'] <= r < prob_pars['prob_tilt'] + prob_pars['prob_add']) or len(self.module_list) == 0:
+        if (prob_pars['prob_tilt'] <= r < prob_pars['prob_tilt'] + prob_pars['prob_add']) and len(self.module_list) < self.max_n_modules:
             # print('Adding,', 'len =', len(self.module_list), ', r =', r)
             fp_type = random.choice(self.used_fp_types)
             self.add_module(fp_type.generate(par_limits, par_choice_values, n_regimes=self.n_regimes))
@@ -204,7 +204,7 @@ class Landscape:
         """
         ti = np.random.uniform()
         r = np.random.uniform()
-        if r < prob_pars['prob_add'] or len(self.module_list) == 0:
+        if (r < prob_pars['prob_add'] or len(self.module_list) == 0) and len(self.module_list) < self.max_n_modules:
             fp_type = random.choice(self.used_fp_types)
             self.add_module(fp_type.generate(par_limits, par_choice_values, n_regimes=self.n_regimes))
         elif r < prob_pars['prob_add'] + prob_pars['prob_drop'] and len(self.module_list) > 1 \
@@ -313,11 +313,11 @@ class Landscape:
             prob = np.zeros((coordinate.shape[1], len(self.module_list) + 1))
             for i, module in enumerate(self.module_list):
                 V, st, at = module.get_current_pars(t, self.regime, *self.morphogen_times)
-                prob[:,i] = np.exp(
+                prob[:,i+1] = np.exp(
                     -np.sum((coordinate.T - np.array((module.x, module.y))) ** 2, axis=1) / 2. / st ** 2) / st ** 2
             # print(prob/2/np.pi)
-            prob = (prob.T / np.sum(prob, axis=1)).T
-            prob[:, -1] = 0. # probability threshold: for probs below this value cells will be assigned as 'unclustered'
+            #prob = (prob.T / np.sum(prob, axis=1)).T
+            prob[:, 0] = 0.1 # probability threshold: for probs below this value cells will be assigned as 'unclustered'
             # print(prob*100)
             states = np.argmax(prob, axis=1)
         return states

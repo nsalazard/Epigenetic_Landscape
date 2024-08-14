@@ -131,7 +131,7 @@ class Population:
                 with open(pickle_name + str(igen) + '.pickle', "wb") as f:
                     pickle.dump(self.landscape_list[0].module_list, f)
             
-            if output_dir != None and igen % 10 == 0 :
+            if output_dir != None and (igen % 10 == 0 or igen == ngenerations - 1):
                 L = 10.
                 npoints = 201
                 q = np.linspace(-L, L, npoints)

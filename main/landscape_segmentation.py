@@ -23,8 +23,9 @@ class Somitogenesis_Landscape(Landscape):
 
         noise = fitness_pars['noise']
         ndt = fitness_pars['ndt']
+        self.number_attractors()
         self.cell.init_position(noise)
-        self.run_cells(noise, ndt=ndt, same_time=False)
+        self.run_cells(noise, ndt=ndt, same_time=False, measure='gaussian')
         self.cell.Prob_Atrrac()
         self.cell.Prob_ts()
         self.cell.H_diver()
@@ -34,5 +35,13 @@ class Somitogenesis_Landscape(Landscape):
         self.result = kymo
         self.cell.Entropy()
         #print(self.cell.final_entropy)
-        return -1.*self.cell.final_entropy
+        # penal_stddev = np.std(self.cell.prob_attrac[1:])
+        penal_stddev = self.cell.std_around_value()
+
+        entropy = (-1.*self.cell.final_entropy ) - (self.cell.penal * 0.01) - (self.cell.unclustered_cells * 0.01) #- (penal_stddev * 0.01)
+        #if (self.cell.n_attrac <= 2.):
+        #    max_entropy = 1
+        #else:
+        #    max_entropy = np.log2(self.cell.n_attrac)
+        return entropy    #/max_entropy
     
