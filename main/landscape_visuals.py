@@ -391,6 +391,8 @@ def visualize_div_time(landscape, output_dir =None, show = False):
     color = order_colors[:(n_att+1)]
     cmap = ListedColormap(color)
 
+    plt.figure(figsize=(10, 8))
+
     # Create a color map for the matrix
     plt.imshow(landscape.cell.mtx_div_time, cmap=cmap, vmin=0, vmax=len(color)-1)
 
