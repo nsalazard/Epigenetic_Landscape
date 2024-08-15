@@ -16,7 +16,7 @@ from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 25
 NUM_EVO = 500
-NUM_LAND = 300
+NUM_LAND = 400
 save_dir = f'saved_files_{seed}/'
 
 np.random.seed(seed)
