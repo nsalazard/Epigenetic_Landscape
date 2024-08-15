@@ -14,7 +14,7 @@ from helper_func import plot_cell_concentration, get_cell_data, delete_all_image
 from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
-seed= 24
+seed= 25
 NUM_EVO = 500
 NUM_LAND = 300
 save_dir = f'saved_files_{seed}/'
