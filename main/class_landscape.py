@@ -7,7 +7,7 @@ from class_module import Node
 
 class Landscape:
     def __init__(self,cell, module_list=(), A0=0., init_cond=(0., 1.), regime=mr_sigmoid, n_regimes=2,
-                 morphogen_times=(0.,), used_fp_types=(Node,), immutable_pars_list=(), tilt = 0, tilt_par = None):
+                 morphogen_times=(0.,), used_fp_types=(Node,), immutable_pars_list=(), tiltx = 0,tilty = 0, tilt_par = None):
         """
         :param module_list: list of module objects
         :param A0: float - strength of global attraction (boundary condition of the potential)
@@ -33,8 +33,10 @@ class Landscape:
         self.used_fp_types = used_fp_types
         self.init_cond = init_cond
         self.max_n_modules = 7  #MAX
-        self.tilt = tilt
-        self.tilt_var = tilt
+        self.tiltx = tiltx
+        self.tilty = tilty
+        self.tilt_var_x = tiltx
+        self.tilt_var_y = tilty
         self.tilt_par = tilt_par
         self.num_dim = 2
 
@@ -62,10 +64,15 @@ class Landscape:
         return repr_str
 #______________________________________________________________________________________________________________
 
-    def ModifyTilt(self,t,k=0.5):
+    def ModifyTilt_x(self,t,k=0.5):
         k= self.tilt_par
-        tilt_new = self.tilt - self.tilt * (1 / (1 + np.exp(-k * (t - self.morphogen_times[0]))))
-        self.tilt_var = round(tilt_new, 6)
+        tilt_new = self.tiltx - self.tiltx * (1 / (1 + np.exp(-k * (t - (self.morphogen_times[0])/2))))
+        self.tilt_var_x = round(tilt_new, 6)
+
+    def ModifyTilt_y(self,t,k=0.5):
+        k= self.tilt_par
+        tilt_new = self.tilty - self.tilty * (1 / (1 + np.exp(-k * (t - self.morphogen_times[0]))))
+        self.tilt_var_y = round(tilt_new, 6)
 
 # _______________________________________________________________________________________________________________
 # ____________________________ Landscape dynamics calculation____________________________________________________
@@ -92,16 +99,16 @@ class Landscape:
         :return: tuple of arrays with x and y derivatives, potentials (optional)
         """
         if self.tilt_par != None:
-            self.ModifyTilt(t)
-            #print(f'Tilt:{self.tilt} in t: {t}')
+            self.ModifyTilt_x(t)
+            self.ModifyTilt_y(t)
 
         if (self.num_dim ==1):
           x = q[0]
           w = np.zeros((len(self.module_list), *x.shape))
           dx = np.zeros((len(self.module_list), *x.shape))
-          derivs = self.A0 * -x ** 3 + np.sum(w * dx, axis=0) - self.tilt_var
+          derivs = self.A0 * -x ** 3 + np.sum(w * dx, axis=0) - self.tilt_var_x
           if return_potentials:
-              potential = self.A0 / 4 * (x ** 4) + self.tilt_var*x
+              potential = self.A0 / 4 * (x ** 4) + self.tilt_var_x*x
               rot_potential = 0.
               return derivs, potential, rot_potential
           return derivs
@@ -128,10 +135,10 @@ class Landscape:
               r = np.sqrt(xr ** 2 + yr ** 2)
               w[i, :] = A * self.local_weight(r, sig[i])
               dx[i, :], dy[i, :] = self.fixed_point(module, xr, yr)
-          derivs = self.A0 * np.array((-x ** 3, -y ** 3)) + (np.sum(w * dx, axis=0), np.sum(w * dy, axis=0)) - (np.full(x.shape,self.tilt_var),np.zeros(x.shape))
+          derivs = self.A0 * np.array((-x ** 3, -y ** 3)) + (np.sum(w * dx, axis=0), np.sum(w * dy, axis=0)) - (np.full(x.shape,self.tilt_var_x),np.full(y.shape,self.tilt_var_y))
           if return_potentials:
 
-              potential = np.sum(w * (~curl * sign * sig ** 2)[:, np.newaxis, np.newaxis], axis=0) + self.A0 / 4 * (x ** 4 + y ** 4) + self.tilt_var*x
+              potential = np.sum(w * (~curl * sign * sig ** 2)[:, np.newaxis, np.newaxis], axis=0) + self.A0 / 4 * (x ** 4 + y ** 4) + self.tilt_var_x*x + self.tilt_var_y*y
               rot_potential = np.sum(w * (curl * sign * sig ** 2)[:, np.newaxis, np.newaxis], axis=0)
               return derivs, potential, rot_potential
           return derivs
@@ -162,10 +169,13 @@ class Landscape:
         """
         r = np.random.uniform()
 
-        if r < prob_pars['prob_tilt']:
-            self.tilt = np.random.uniform(*self.par_choice_values['tilt_lmt'])
+        if r < prob_pars['prob_tilt']/2:
+            self.tiltx = np.random.uniform(*self.par_choice_values['tilt_lmt'])
+        
+        elif r < prob_pars['prob_tilt']:
+            self.tiltx = np.random.uniform(*self.par_choice_values['tilt_lmt'])
 
-        if (prob_pars['prob_tilt'] <= r < prob_pars['prob_tilt'] + prob_pars['prob_add']) and len(self.module_list) < self.max_n_modules:
+        elif (prob_pars['prob_tilt'] <= r < prob_pars['prob_tilt'] + prob_pars['prob_add']) and len(self.module_list) < self.max_n_modules:
             # print('Adding,', 'len =', len(self.module_list), ', r =', r)
             fp_type = random.choice(self.used_fp_types)
             self.add_module(fp_type.generate(par_limits, par_choice_values, n_regimes=self.n_regimes))

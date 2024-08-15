@@ -15,7 +15,7 @@ from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 25
-NUM_EVO = 500
+NUM_EVO = 1000
 NUM_LAND = 400
 save_dir = f'saved_files_{seed}/'
 
@@ -68,7 +68,8 @@ if __name__ == '__main__':
         'morphogen_times': morphogen_times,
         'used_fp_types': (Node,),
         'immutable_pars_list': [],
-        'tilt': -0.35,
+        'tiltx': -0.35,
+        'tilty': 0.0,
         'tilt_par': (0.5)
     }
 
