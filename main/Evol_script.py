@@ -15,8 +15,8 @@ from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 23
-NUM_EVO = 400
-NUM_LAND = 100
+NUM_EVO = 500
+NUM_LAND = 200
 save_dir = f'saved_files_{seed}/'
 
 np.random.seed(seed)
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     par_limits = {
     'x': (-8.,8.),
     'y': (-5., 5.),
-    'a': (1., 2.), #(0.3,3.),
-    's': (1., 2) #(0.3, 2)
+    'a': (1.4, 1.8), #(0.3,3.),
+    's': (1.4, 1.8) #(0.3, 2)
     }
 
     par_choice_values = {
