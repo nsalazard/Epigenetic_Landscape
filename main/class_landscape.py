@@ -66,10 +66,17 @@ class Landscape:
 
     def ModifyTilt_x(self,t,k=0.5):
         k= self.tilt_par
-        tilt_new = self.tiltx - self.tiltx * (1 / (1 + np.exp(-k * (t - (self.morphogen_times[0])/2))))
+        tilt_new = self.tiltx - self.tiltx * (1 / (1 + np.exp(-k * (t - (self.morphogen_times[0])))))
         self.tilt_var_x = round(tilt_new, 6)
 
     def ModifyTilt_y(self,t,k=0.5):
+        k= self.tilt_par
+        tilt_new = self.tilty - self.tilty * (1 / (1 + np.exp(-k * (t - self.morphogen_times[0]))))
+        self.tilt_var_y = round(tilt_new, 6)
+
+    def ModifyTilt_xy(self,t,k=0.5, times = None):
+        if times is None:
+            times = (int(self.morphogen_times/3), int(2*self.morphogen_times/3))
         k= self.tilt_par
         tilt_new = self.tilty - self.tilty * (1 / (1 + np.exp(-k * (t - self.morphogen_times[0]))))
         self.tilt_var_y = round(tilt_new, 6)
