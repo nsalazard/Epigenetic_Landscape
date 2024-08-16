@@ -15,7 +15,7 @@ from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
 seed= 25
-NUM_EVO = 1000
+NUM_EVO = 500
 NUM_LAND = 400
 save_dir = f'saved_files_{seed}/'
 
@@ -36,8 +36,8 @@ if __name__ == '__main__':
     nt = int(tf*3)
     noise_init = 0.5
     init_cond=(-9, 0)
-    W_H_d = 0.5
-    W_H_dp = 1.5
+    W_H_d = 1 #0.5
+    W_H_dp = 1 #1.5
 
     cell = Cells(t0 = t0, tf = tf, tc = tc , div = div,repl = repl, nt = nt, init_cond = init_cond, W_H_d = 0.5, W_H_dp = 1.5)
     cell.create_Start_Times()
@@ -70,7 +70,8 @@ if __name__ == '__main__':
         'immutable_pars_list': [],
         'tiltx': -0.35,
         'tilty': 0.0,
-        'tilt_par': (0.5)
+        'tilt_par': (0.5),
+        'xy' : False
     }
 
     prob_pars = {

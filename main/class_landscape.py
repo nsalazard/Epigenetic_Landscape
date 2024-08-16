@@ -7,7 +7,7 @@ from class_module import Node
 
 class Landscape:
     def __init__(self,cell, module_list=(), A0=0., init_cond=(0., 1.), regime=mr_sigmoid, n_regimes=2,
-                 morphogen_times=(0.,), used_fp_types=(Node,), immutable_pars_list=(), tiltx = 0,tilty = 0, tilt_par = None):
+                 morphogen_times=(0.,), used_fp_types=(Node,), immutable_pars_list=(), tiltx = 0,tilty = 0, tilt_par = None, xy = False):
         """
         :param module_list: list of module objects
         :param A0: float - strength of global attraction (boundary condition of the potential)
@@ -39,6 +39,7 @@ class Landscape:
         self.tilt_var_y = tilty
         self.tilt_par = tilt_par
         self.num_dim = 2
+        self.xy = xy
 
         count = 0
         for module in module_list:
@@ -76,10 +77,28 @@ class Landscape:
 
     def ModifyTilt_xy(self,t,k=0.5, times = None):
         if times is None:
-            times = (int(self.morphogen_times/3), int(2*self.morphogen_times/3))
+            times = (int(self.morphogen_times[0]/3), int(2*self.morphogen_times[0]/3))
+        time1= int((self.cell.t0 + times[0])/2	)
+        time2= int((times[0] + times[1])/2	)
+        time3= int((times[1] + self.cell.tf)/2	)
+
         k= self.tilt_par
-        tilt_new = self.tilty - self.tilty * (1 / (1 + np.exp(-k * (t - self.morphogen_times[0]))))
-        self.tilt_var_y = round(tilt_new, 6)
+        
+        if t < time1:
+
+            tilt_new = self.tiltx * (1 / (1 + np.exp(-k * (time1 - t))))
+            self.tilt_var_x = round(tilt_new, 6)
+            self.tilt_var_y = 0
+        elif time1 <= t < time2:
+
+            tilt_new = self.tilty * (1 / (1 + np.exp(-k * (t- time2))))
+            self.tilt_var_x = 0
+            self.tilt_var_y = round(tilt_new, 6)
+        else:
+
+            tilt_new = self.tilty * (1 / (1 + np.exp(-k * (time3 - t))))
+            self.tilt_var_x = 0
+            self.tilt_var_y = round(tilt_new, 6)
 
 # _______________________________________________________________________________________________________________
 # ____________________________ Landscape dynamics calculation____________________________________________________
@@ -105,9 +124,12 @@ class Landscape:
         :param return_potentials: bool
         :return: tuple of arrays with x and y derivatives, potentials (optional)
         """
-        if self.tilt_par != None:
+        if self.tilt_par != None and self.xy == False:
             self.ModifyTilt_x(t)
             self.ModifyTilt_y(t)
+
+        elif self.tilt_par != None and self.xy == True:
+            self.ModifyTilt_xy(t)
 
         if (self.num_dim ==1):
           x = q[0]

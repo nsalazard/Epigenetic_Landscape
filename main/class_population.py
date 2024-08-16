@@ -31,7 +31,8 @@ class Population:
                                                          landscape_pars['immutable_pars_list'],
                                                          landscape_pars['tiltx'],
                                                          landscape_pars['tilty'],
-                                                         landscape_pars['tilt_par'])
+                                                         landscape_pars['tilt_par'],
+                                                         landscape_pars['xy'])
                                                         )
 
         if start_module_list and fitness_pars:
