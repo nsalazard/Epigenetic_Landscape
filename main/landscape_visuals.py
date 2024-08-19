@@ -311,7 +311,8 @@ def visualize_landscape_t(landscape, xx, yy, t, color_scheme='fp_types', traj_ti
 # MARK: - visualize_potential
 
 def visualize_potential(landscape, xx, yy, regime, color_scheme='fp_types', elev=None, azim=None, offset=2,
-                        cmap_center=None, rot=False, scatter=False, zlim=None, tilt_par = None, output_gif =None, igen = None, fit = None):
+                        cmap_center=None, rot=False, scatter=False, zlim=None, tilt_par = None, output_gif =None,
+                          igen = None, fit = None, intime = False):
     curl = np.zeros((len(landscape.module_list)), dtype='bool')
     # circles = []
     fig, ax = plt.subplots(1, 1, subplot_kw={"projection": "3d"}, figsize=(6, 6))
@@ -370,7 +371,11 @@ def visualize_potential(landscape, xx, yy, regime, color_scheme='fp_types', elev
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 
     if output_gif is not None:
-        ax.title.set_text(f'Generation: {igen} - Fitness: {fit:.5f}')
+        if intime is True:
+            ax.title.set_text(f'Time: {float(regime)}')
+        else:
+            ax.title.set_text(f'Generation: {igen} - Fitness: {fit:.5f}')
+        
         positive_variable = abs(landscape.tilt_var_x)
         formatted_variable = f"{positive_variable:.3f}".replace('.', '')  # Remove decimal point for filename
         output_path = os.path.join(output_gif, f"{regime}_{igen}_{formatted_variable}.png")

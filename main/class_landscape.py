@@ -76,8 +76,9 @@ class Landscape:
         self.tilt_var_y = round(tilt_new, 6)
 
     def ModifyTilt_xy(self,t,k=0.5, times = None):
+        new_tc = int(self.morphogen_times[0] + 10)
         if times is None:
-            times = (int(self.morphogen_times[0]), int((self.morphogen_times[0] + self.cell.tf)/2))
+            times = (new_tc, int((new_tc + self.cell.tf)/2))
         time1= int((self.cell.t0 + times[0])/2	)
         time2= int((times[0] + times[1])/2	)
         time3= int((times[1] + self.cell.tf)/2	)
