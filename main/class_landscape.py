@@ -67,7 +67,7 @@ class Landscape:
 
     def ModifyTilt_x(self,t,k=0.5):
         k= self.tilt_par
-        tilt_new = self.tiltx - self.tiltx * (1 / (1 + np.exp(-k * (t - (self.morphogen_times[0])))))
+        tilt_new = self.tiltx - self.tiltx * (1 / (1 + np.exp(-(k+0.5) * (t - (self.morphogen_times[0])))))
         self.tilt_var_x = round(tilt_new, 6)
 
     def ModifyTilt_y(self,t,k=0.5):
@@ -76,29 +76,29 @@ class Landscape:
         self.tilt_var_y = round(tilt_new, 6)
 
     def ModifyTilt_xy(self,t,k=0.5, times = None):
-        new_tc = int(self.morphogen_times[0] + 10)
+        new_tc = int(self.morphogen_times[0]) 
+        delta = -0.01 
         if times is None:
             times = (new_tc, int((new_tc + self.cell.tf)/2))
-        time1= int((self.cell.t0 + times[0])/2	)
+        time1= int(3*(self.cell.t0 + times[0])/4)             #FIXME
         time2= int((times[0] + times[1])/2	)
         time3= int((times[1] + self.cell.tf)/2	)
 
         k= self.tilt_par
+
+        tilt_new = (self.tiltx - delta) * (1 / (1 + np.exp(-k * (time1 - t)))) + delta
+        self.tilt_var_x = round(tilt_new, 6)
         
         if t < time1:
 
-            tilt_new = self.tiltx * (1 / (1 + np.exp(-k * (time1 - t))))
-            self.tilt_var_x = round(tilt_new, 6)
-            self.tilt_var_y = 0
+            self.tilt_var_y = 0.0
         elif time1 <= t < time2:
 
-            tilt_new = self.tilty * (1 / (1 + np.exp(-k * (t- time2))))
-            self.tilt_var_x = 0
+            tilt_new = (self.tilty) * (1 / (1 + np.exp(-k * (t- time2))))
             self.tilt_var_y = round(tilt_new, 6)
         else:
 
-            tilt_new = self.tilty * (1 / (1 + np.exp(-k * (time3 - t))))
-            self.tilt_var_x = 0
+            tilt_new = (self.tilty) * (1 / (1 + np.exp(-k * (time3 - t))))
             self.tilt_var_y = round(tilt_new, 6)
 
 # _______________________________________________________________________________________________________________

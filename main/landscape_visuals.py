@@ -372,7 +372,7 @@ def visualize_potential(landscape, xx, yy, regime, color_scheme='fp_types', elev
 
     if output_gif is not None:
         if intime is True:
-            ax.title.set_text(f'Time: {float(regime)}')
+            ax.title.set_text(f'Time: {float(regime)} Tiltx:{landscape.tilt_var_x : .2f} Tilty:{landscape.tilt_var_y : .2f}')
         else:
             ax.title.set_text(f'Generation: {igen} - Fitness: {fit:.5f}')
         
