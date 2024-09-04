@@ -1,3 +1,4 @@
+
 import multiprocessing as mp
 import os
 import pickle
@@ -6,6 +7,7 @@ from copy import deepcopy
 import numpy as np
 from cell_class import Cells
 from landscape_visuals import visualize_potential
+from landscape_visuals import plot_entropy
 
 class Population:
     def __init__(self, cell: Cells, N: int, problem_type, landscape_pars, prob_pars, fitness_pars,
@@ -86,7 +88,7 @@ class Population:
 # ______________________________________________________________________________________________________________________
 #  MARK: - Evolve Parallel
 
-    def evolve_parallel(self, ngenerations, fitness_pars, saved_files_dir, save_each=10,img_save=20, output_dir=None):
+    def evolve_parallel(self, ngenerations, fitness_pars, saved_files_dir, save_each=10,img_save=20, output_dir=None, seed = None):
         """ Evolutionary optimization using all CPUs """
         timestr = time.strftime("%Y%m%d-%H%M%S")
         print('Timecode:', timestr)
@@ -106,9 +108,16 @@ class Population:
 
         pool = mp.Pool(mp.cpu_count())
 
+        arr_H_div = np.empty(ngenerations, dtype='float')
+        arr_H_div_pos = np.empty(ngenerations, dtype='float')
+
         for igen in range(ngenerations):
             if igen % 10 == 0:
                 print('Generation:', igen)
+
+            arr_H_div[igen] = self.landscape_list[0].cell.h_diversity
+            arr_H_div_pos[igen] = self.landscape_list[0].cell.h_div_pos
+
             results = []
             for odd_landscape in self.landscape_list[::2]:
                 results.append(pool.apply_async(odd_landscape.mutate_and_return,
@@ -142,6 +151,7 @@ class Population:
                                           color_scheme='order', scatter=True, elev=20, azim=-90, output_gif = output_dir, 
                                           igen =igen, fit = self.landscape_list[0].fitness)
 
+        plot_entropy(ngenerations,arr_H_div, arr_H_div_pos, output_dir = f'images/{seed}/');
             
 
         save_gens_file.close()

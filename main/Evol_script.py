@@ -14,9 +14,9 @@ from helper_func import plot_cell_concentration, get_cell_data, delete_all_image
 from landscape_segmentation import Somitogenesis_Landscape  #########
 from class_module import Node, UnstableNode, Center, NegCenter
 
-seed= 25
-NUM_EVO = 600
-NUM_LAND = 400
+seed= 18
+NUM_EVO = 400
+NUM_LAND = 32
 save_dir = f'saved_files_{seed}/'
 
 np.random.seed(seed)
@@ -28,16 +28,16 @@ getcontext().rounding = ROUND_HALF_UP
 if __name__ == '__main__':
     from cell_class import Cells
     t0 = 0.
-    tf = 80.
-    tc = 60.
-    div = 60 #40 cells
+    tf = 70 # 80.
+    tc = 40 # 60.
+    div = 30 #40 cells
     repl = 20 #20 replicates
     #Total num cell = 40*20 = 800
     nt = int(tf*3)
     noise_init = 0.3
-    init_cond=(-9, 0)
-    W_H_d = 1 #0.5
-    W_H_dp = 1 #1.5
+    init_cond=(-9, 4)
+    W_H_d = 0.5
+    W_H_dp = 1.5
 
     cell = Cells(t0 = t0, tf = tf, tc = tc , div = div,repl = repl, nt = nt, init_cond = init_cond, W_H_d = 0.5, W_H_dp = 1.5)
     cell.create_Start_Times()
@@ -50,9 +50,9 @@ if __name__ == '__main__':
 
     par_limits = {
     'x': (-8.,8.),
-    'y': (-5., 5.),
-    'a': (0.5, 2.), #(0.3,3.),
-    's': (0.5, 2.) #(0.3, 2)
+    'y': (-5., 0.),
+    'a': (0.5, 2.), #(1., 2.)
+    's': (0.5, 2.) #(0.5, 2.)
     }
 
     par_choice_values = {
@@ -68,14 +68,15 @@ if __name__ == '__main__':
         'morphogen_times': morphogen_times,
         'used_fp_types': (Node,),
         'immutable_pars_list': [],
-        'tiltx': -0.35,
-        'tilty': 0.0,
+        'tiltx': -0.65,
+        'tilty': 0.35,
         'tilt_par': (0.5),
-        'xy' : False
+        'xy' : True    # False # False is for just 1 axis
     }
 
     prob_pars = {
-        'prob_tilt': 0.10,
+        'prob_tilt_y': 0.05,
+        'prob_tilt_x': 0.05,
         'prob_add': 0.15,
         'prob_drop': 0.15,
         'prob_shuffle': 0.
@@ -112,7 +113,7 @@ if __name__ == '__main__':
 
     #EVOLUTION
 
-    fitness_traj = P.evolve_parallel(NUM_EVO, fitness_pars, save_dir, save_each=5, output_dir = f'images/{seed}/evo/')
+    fitness_traj = P.evolve_parallel(NUM_EVO, fitness_pars, save_dir, save_each=5, output_dir = f'images/{seed}/evo/', seed = seed)
     print('Done')
 
     output_dir = f"images/{seed}/"

@@ -497,6 +497,30 @@ def create_video_from_images(image_folder, output_video, fps=10):
     print(f"Video saved successfully as {output_video}")
 
 
+def plot_entropy(ngenerations, arr_H_div, arr_H_div_pos, output_dir = None):
+    x = np.arange(ngenerations)
+    # Create a new figure
+    plt.figure()
+
+    # Plot the first line with gray color
+    plt.plot(x, arr_H_div, color='gray', label='H div')
+
+    # Plot the second line with purple color
+    plt.plot(x, arr_H_div_pos, color='purple', label='H div_pos')
+
+    # Add labels and title
+    plt.xlabel('X-axis')
+    plt.ylabel('Y-axis')
+    plt.title('Plot of Two Arrays')
+    plt.legend()
+
+    # plt.show()
+
+    if output_dir is not None:
+        output_path = os.path.join(output_dir, "Entropy.png")
+        plt.savefig(output_path)
+
+
 # MARK: - video_landscape
 
 def video_landscape(landscape, xx, yy, traj_times=(0,0,0), color_scheme='fp_types', plot_start=0, size_x=4, size_y=4,ndt= 100,

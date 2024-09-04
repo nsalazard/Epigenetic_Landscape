@@ -198,23 +198,23 @@ class Landscape:
         :param fitness_pars:
         """
         r = np.random.uniform()
+        prob_tilt = prob_pars['prob_tilt_x'] + prob_pars['prob_tilt_y']
 
-        if r < prob_pars['prob_tilt']/2:
-            self.tiltx = np.random.uniform(*self.par_choice_values['tilt_lmt'])
+        if r < prob_pars['prob_tilt_y']:
+            self.tilty = np.random.uniform(*self.par_choice_values['tilt_lmt'])
         
-        elif r < prob_pars['prob_tilt']:
+        elif prob_pars['prob_tilt_y'] <= r < prob_pars['prob_tilt_x'] + prob_pars['prob_tilt_y'] :
             self.tiltx = np.random.uniform(*self.par_choice_values['tilt_lmt'])
 
-        elif (prob_pars['prob_tilt'] <= r < prob_pars['prob_tilt'] + prob_pars['prob_add']) and len(self.module_list) < self.max_n_modules:
+        elif prob_tilt <= r < (prob_tilt + prob_pars['prob_add']) and len(self.module_list) < self.max_n_modules:
             # print('Adding,', 'len =', len(self.module_list), ', r =', r)
             fp_type = random.choice(self.used_fp_types)
             self.add_module(fp_type.generate(par_limits, par_choice_values, n_regimes=self.n_regimes))
-        elif r < (prob_pars['prob_add'] + prob_pars['prob_drop'] + prob_pars['prob_tilt']) and len(self.module_list) > 1:
+        elif r < (prob_tilt + prob_pars['prob_add'] + prob_pars['prob_drop'] ) and len(self.module_list) > 1:
             # print('Deleting,', 'len =', len(self.module_list), ', r =', r)
             del_ind = np.random.choice(len(self.module_list))
             self.del_module(del_ind)
-        elif r < (prob_pars['prob_add'] + prob_pars['prob_drop'] + prob_pars['prob_shuffle'] + prob_pars['prob_tilt']) and len(
-                self.module_list) > 1:
+        elif r < (prob_tilt + prob_pars['prob_add'] + prob_pars['prob_drop'] + prob_pars['prob_shuffle']) and len(self.module_list) > 1:
             # print('Shuffling,', 'len =', len(self.module_list), ', r =', r)
             random.shuffle(self.module_list)
         else:
