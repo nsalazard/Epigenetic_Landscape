@@ -18,4 +18,4 @@ These improvements were introduced to explore additional system dynamics and to 
 
 ## Example of Evolution (GIF)
 
-![Landscape evolution example](Media.gif)
+![Landscape evolution example](2_tilts_4_attractors.gif)
